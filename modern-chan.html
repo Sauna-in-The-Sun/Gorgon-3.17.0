@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทดสอบโค้ด</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        article {
+            padding: 20px;
+            margin: 20px auto;
+            background: #fff;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #333;
+            color: #fff;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Moder Chan</h1>
+</header>
+
+<article>
+    <h2>โค้ดอัลกอริทึม Gorgon ( Guarded Overall Redaction for Genuine Optimal Navigation )</h2>
+    <p> from Crypto.Cipher import AES, Serpent
+from Crypto.Random import get_random_bytes
+from Crypto.Protocol.KDF import PBKDF2
+
+# Function to create a complex key from the password
+def create_complex_key(password, salt):
+    # Use PBKDF2 to create a 512-bit key
+    key = PBKDF2(password, salt, dkLen=64, count=1000000)
+    return key
+
+# Function to encrypt plaintext using AES and then Serpent
+def encrypt_combined(plaintext, key):
+    # Encrypt with AES
+    aes_cipher = AES.new(key[:32], AES.MODE_GCM)  # Use 256 bits (32 bytes)
+    nonce_aes, ciphertext_aes, tag_aes = aes_cipher.encrypt_and_digest(plaintext)
+
+    # Encrypt the AES output with Serpent
+    serpent_cipher = Serpent.new(key[32:], Serpent.MODE_ECB)  # Use the next 32 bytes for Serpent
+    ciphertext_combined = serpent_cipher.encrypt(ciphertext_aes)
+
+    return aes_cipher.nonce, ciphertext_combined, tag_aes
+
+# Function to decrypt ciphertext using Serpent and then AES
+def decrypt_combined(nonce, ciphertext_combined, tag, key):
+    # Decrypt with Serpent
+    serpent_cipher = Serpent.new(key[32:], Serpent.MODE_ECB)  # Use the next 32 bytes for Serpent
+    ciphertext_aes = serpent_cipher.decrypt(ciphertext_combined)
+
+    # Decrypt with AES
+    aes_cipher = AES.new(key[:32], AES.MODE_GCM, nonce=nonce)
+    plaintext = aes_cipher.decrypt_and_verify(ciphertext_aes, tag)
+
+    return plaintext
+
+# Function to encrypt a file
+def encrypt_file(input_file, output_file, password):
+    salt = get_random_bytes(16)  # Generate a random salt
+    key = create_complex_key(password.encode(), salt)
+
+    with open(input_file, 'rb') as f:
+        plaintext = f.read()
+
+    nonce, ciphertext_combined, tag = encrypt_combined(plaintext, key)
+
+    with open(output_file, 'wb') as f:
+        # Write salt, nonce, ciphertext, and tag to the file
+        f.write(salt + nonce + tag + ciphertext_combined)
+
+# Function to decrypt a file
+def decrypt_file(input_file, output_file, password):
+    with open(input_file, 'rb') as f:
+        # Read salt, nonce, tag, and ciphertext from the file
+        salt = f.read(16)
+        nonce = f.read(16)
+        tag = f.read(16)
+        ciphertext_combined = f.read()
+
+    key = create_complex_key(password.encode(), salt)
+    plaintext = decrypt_combined(nonce, ciphertext_combined, tag, key)
+
+    with open(output_file, 'wb') as f:
+        f.write(plaintext)
+
+if __name__ == "__main__":
+    # Testing the encryption and decryption of a file
+    password = "securepassword"  # Password for encryption
+    input_file = "file_to_encrypt.txt"  # Change to the file you want to encrypt
+    encrypted_file = "encrypted_file.bin"  # Encrypted file
+    decrypted_file = "decrypted_file.txt"  # Decrypted file
+
+    # Encrypt the file
+    encrypt_file(input_file, encrypted_file, password)
+    print(f"The file {input_file} has been encrypted to {encrypted_file}")
+
+    # Decrypt the file
+    decrypt_file(encrypted_file, decrypted_file, password)
+    print(f"The file {encrypted_file} has been decrypted to {decrypted_file}")
+</p>
+    <p>ผมลองเขียนโค้ดเข้ารหัสแบบ 256 บิท สองครั้ง เพื่อสร้างคีย์เข้ารหัสแบบ 512 บิท</p>
+</article>
+
+<footer>
+    <p>© 2024 Project Web ImBad | สงวนลิขสิทธิ์</p>
+</footer>
+
+</body>
+</html>
